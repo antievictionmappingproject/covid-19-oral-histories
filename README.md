@@ -11,6 +11,6 @@ There is likely a better way to have access to these in process.env in the local
 
 - test airtable call deployed in netlify
 - make call in airtable in correct location, not randomly in App.js
-- create leaflet markers from records
+- create leaflet markers from records (maybe use node-geocoder npm package?)
 - load audio file from url
 - implement sound visualizer
