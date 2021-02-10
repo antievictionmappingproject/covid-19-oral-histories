@@ -1,9 +1,9 @@
 ## Running the repo
 
-#To run app, run these commands
-export AIRTABLE_API_KEY=[you airtable api key here]
-export AIRTABLE_BASE_ID=[your base id here]
-netlify dev
+# To run app, run these commands
+- export AIRTABLE_API_KEY=[you airtable api key here]
+- export AIRTABLE_BASE_ID=[your base id here]
+- netlify dev
 
 There is likely a better way to have access to these in process.env in the local dev, but a few things I tried didn't work -Bora
 
