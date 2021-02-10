@@ -34,9 +34,9 @@ export default () => {
 		return null;
 	}
 
-	fetch("/.netlify/functions/airtable")
+	fetch(`/.netlify/functions/airtable`)
 		.then((data) => data.json())
-		.then(({ msg }) => console.log(msg));
+		.then((data) => console.log(data));
 
 	return (
 		<>
