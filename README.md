@@ -12,7 +12,7 @@ There is likely a better way to have access to these in process.env in the local
 # To do
 
 - ~~test airtable call deployed in netlify~~
-- ~~convert string location to latlong (using mapquest)~~
+- ~~convert string location to latlong (using mapquest)~~ using https://developer.mapquest.com/documentation/open/geocoding-api/address/get/
 - create leaflet markers from records
 - make call in airtable in correct location, not randomly in App.js
 - load audio file from url
