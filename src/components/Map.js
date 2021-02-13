@@ -1,104 +1,102 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
-  MapContainer,
-  TileLayer,
-  LayersControl,
-  Pane,
-  GeoJSON,
-  ZoomControl,
-} from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
-import { useTranslation } from 'react-i18next';
+	MapContainer,
+	TileLayer,
+	LayersControl,
+	Pane,
+	GeoJSON,
+	ZoomControl,
+	Marker,
+	Popup,
+} from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-markercluster";
+import { useTranslation } from "react-i18next";
 
-import getMapConfig from '../config/map-config';
+import getMapConfig from "../config/map-config";
 
 function LeafletMap({ mapConfig }) {
-  // const layers = useSelector(state => state.data.layers);
-  const layers = []
-  const dispatch = useDispatch();
-  const { t } = useTranslation();
+	// const layers = useSelector(state => state.data.layers);
+	// const layers = [];
+	const dispatch = useDispatch();
+	const { t } = useTranslation();
 
-  if (!layers || !layers.length) return <></>;
+	const [interviews, setInterviews] = useState([]);
 
-  return (
-    <>
-      <LayersControl collapsed={false} position="topright">
-        {layers.map(layer => {
-          return (
-            <LayersControl.Overlay
-              key={layer.key}
-              name={t(layer.layerConfig.nameI18n)}
-              checked={mapConfig[layer.key] === true}
-            >
-              {layer.layerConfig.name === 'Housing Justice Actions' ? (
-                <Pane
-                  name={layer.key}
-                  style={{ zIndex: 500 + layer.layerConfig.zIndex }}
-                >
-                  <MarkerClusterGroup>
-                    <GeoJSON
-                      data={layer.data}
-                      style={layer.layerConfig.style}
-                      pointToLayer={layer.layerConfig.pointToLayer}
-                      onEachFeature={(feature, mapLayer) => {
-                        mapLayer.on('click', () => {
-                          dispatch({
-                            type: 'ui:info-window:show',
-                            payload: layer.layerConfig.props(mapLayer.feature),
-                          });
-                        });
-                      }}
-                    ></GeoJSON>
-                  </MarkerClusterGroup>
-                </Pane>
-              ) : (
-                <Pane
-                  name={layer.key}
-                  style={{ zIndex: 500 + layer.layerConfig.zIndex }}
-                >
-                  <GeoJSON
-                    data={layer.data}
-                    style={layer.layerConfig.style}
-                    onEachFeature={(feature, mapLayer) => {
-                      mapLayer.on('click', () => {
-                        dispatch({
-                          type: 'ui:info-window:show',
-                          payload: layer.layerConfig.props(mapLayer.feature),
-                        });
-                      });
-                      layer.layerConfig.onEachFeature(feature, mapLayer);
-                    }}
-                    pointToLayer={layer.layerConfig.pointToLayer}
-                  ></GeoJSON>
-                </Pane>
-              )}
-            </LayersControl.Overlay>
-          );
-        })}
-      </LayersControl>
-      <ZoomControl position="bottomright" />
-    </>
-  );
+	useEffect(async () => {
+		fetch(`/.netlify/functions/airtable`)
+			.then((data) => data.json())
+			.then((data) => {
+				// for each record get the location field and, if it exists map that to a lat long
+
+				let promises = [];
+				data.records.forEach((record) => {
+					const location = record.fields["Geo-Location for map"];
+					// if location field is not empty
+					if (location) {
+						// get the geocoded latitude and longitude for that string
+						let location_promise = fetch(
+							`/.netlify/functions/mapquest?location=${location}`
+						)
+							.then((data) => data.json())
+							.then((data) => {
+								// if mapquest geocode call was succesful
+								if (data.info.statuscode == 0) {
+									// ARBITRARY: grab the first result and add it to the record
+									const { lat, lng } = data.results[0].locations[0].latLng;
+									record.fields["Geo-Location for map latlong"] = [lat, lng];
+									console.log(record);
+								}
+							});
+
+						promises.push(location_promise);
+					}
+				});
+				Promise.all(promises).then(() => {
+					setInterviews(data.records);
+				});
+			});
+	}, []);
+
+	return (
+		<>
+			{interviews.map((interview) => {
+				if (interview.fields["Geo-Location for map latlong"]) {
+					return (
+						<Marker
+							key={interview.id}
+							position={interview.fields["Geo-Location for map latlong"]}
+						>
+							<Popup>hello</Popup>
+						</Marker>
+					);
+				} else {
+					return <></>;
+				}
+			})}
+			<LayersControl collapsed={false} position="topright"></LayersControl>
+			<ZoomControl position="bottomright" />
+		</>
+	);
 }
 
-export default props => {
-  const mapConfig = getMapConfig();
+export default (props) => {
+	const mapConfig = getMapConfig();
 
-  // Map component id prop may be an anti-pattern
-  return (
-    <MapContainer
-      zoomControl={false}
-      center={[mapConfig.lat, mapConfig.lng]}
-      minZoom={3}
-      zoom={mapConfig.z}
-      id="map"
-    >
-      <TileLayer
-        attribution="<a href='https://www.antievictionmap.com/' target='_blank'>Anti-Eviction Mapping Project</a>"
-        url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
-      />
-      <LeafletMap mapConfig={mapConfig} />
-    </MapContainer>
-  );
+	// Map component id prop may be an anti-pattern
+	return (
+		<MapContainer
+			zoomControl={false}
+			center={[mapConfig.lat, mapConfig.lng]}
+			minZoom={3}
+			zoom={mapConfig.z}
+			id="map"
+		>
+			<TileLayer
+				attribution="<a href='https://www.antievictionmap.com/' target='_blank'>Anti-Eviction Mapping Project</a>"
+				url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+			/>
+			<LeafletMap mapConfig={mapConfig} />
+		</MapContainer>
+	);
 };
