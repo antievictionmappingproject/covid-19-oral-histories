@@ -10,10 +10,27 @@ import {
 	Marker,
 	Popup,
 } from "react-leaflet";
+import { Icon,  } from 'leaflet';
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import { useTranslation } from "react-i18next";
+import MarkerImage from "../assets/location-icon.svg"
+// import HouseIcon from "../components/HouseIcon"
 
 import getMapConfig from "../config/map-config";
+
+
+const HouseIcon = new Icon({
+  iconUrl: MarkerImage,
+  iconRetinaUrl: MarkerImage,
+  iconSize: [45, 50],
+  iconAnchor: null,
+  popupAnchor: null,
+  shadowUrl: null,
+  shadowSize: null,
+  shadowAnchor: null,
+});
+
+console.log(HouseIcon)
 
 function LeafletMap({ mapConfig }) {
 	// const layers = useSelector(state => state.data.layers);
@@ -23,7 +40,11 @@ function LeafletMap({ mapConfig }) {
 
 	const [interviews, setInterviews] = useState([]);
 
-	useEffect(async () => {
+	useEffect(() => {
+		getAirtableData()
+	}, []);
+
+	async function getAirtableData() {
 		fetch(`/.netlify/functions/airtable`)
 			.then((data) => data.json())
 			.then((data) => {
@@ -56,23 +77,20 @@ function LeafletMap({ mapConfig }) {
 					setInterviews(data.records);
 				});
 			});
-	}, []);
+	}
 
 	return (
 		<>
-			{interviews.map((interview) => {
-				if (interview.fields["Geo-Location for map latlong"]) {
-					return (
-						<Marker
-							key={interview.id}
-							position={interview.fields["Geo-Location for map latlong"]}
-						>
-							<Popup>hello</Popup>
-						</Marker>
-					);
-				} else {
-					return <></>;
-				}
+			{interviews.filter(i => i.fields["Geo-Location for map latlong"]).map((interview) => {
+				return (
+					<Marker
+						key={interview.id}
+						position={interview.fields["Geo-Location for map latlong"]}
+						icon={HouseIcon}
+					>
+						<Popup>hello</Popup>
+					</Marker>
+				);
 			})}
 			<LayersControl collapsed={false} position="topright"></LayersControl>
 			<ZoomControl position="bottomright" />
