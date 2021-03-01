@@ -10,74 +10,21 @@ import {
 	Marker,
 	Popup,
 } from "react-leaflet";
-import { Icon,  } from 'leaflet';
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import { useTranslation } from "react-i18next";
-import MarkerImage from "../assets/location-icon.svg"
-// import HouseIcon from "../components/HouseIcon"
-
+import HouseIcon from "../components/HouseIcon"
 import getMapConfig from "../config/map-config";
+import { fetchAirtableData } from "../reducers/data";
 
-
-const HouseIcon = new Icon({
-  iconUrl: MarkerImage,
-  iconRetinaUrl: MarkerImage,
-  iconSize: [45, 50],
-  iconAnchor: null,
-  popupAnchor: null,
-  shadowUrl: null,
-  shadowSize: null,
-  shadowAnchor: null,
-});
-
-console.log(HouseIcon)
 
 function LeafletMap({ mapConfig }) {
-	// const layers = useSelector(state => state.data.layers);
-	// const layers = [];
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-
-	const [interviews, setInterviews] = useState([]);
+	const interviews = useSelector(state => state.data.interviews)
 
 	useEffect(() => {
-		getAirtableData()
+		dispatch(fetchAirtableData);
 	}, []);
-
-	async function getAirtableData() {
-		fetch(`/.netlify/functions/airtable`)
-			.then((data) => data.json())
-			.then((data) => {
-				// for each record get the location field and, if it exists map that to a lat long
-
-				let promises = [];
-				data.records.forEach((record) => {
-					const location = record.fields["Geo-Location for map"];
-					// if location field is not empty
-					if (location) {
-						// get the geocoded latitude and longitude for that string
-						let location_promise = fetch(
-							`/.netlify/functions/mapquest?location=${location}`
-						)
-							.then((data) => data.json())
-							.then((data) => {
-								// if mapquest geocode call was succesful
-								if (data.info.statuscode == 0) {
-									// ARBITRARY: grab the first result and add it to the record
-									const { lat, lng } = data.results[0].locations[0].latLng;
-									record.fields["Geo-Location for map latlong"] = [lat, lng];
-									console.log(record);
-								}
-							});
-
-						promises.push(location_promise);
-					}
-				});
-				Promise.all(promises).then(() => {
-					setInterviews(data.records);
-				});
-			});
-	}
 
 	return (
 		<>

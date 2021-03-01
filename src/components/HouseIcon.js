@@ -1,13 +1,15 @@
-import L from 'leaflet';
+import { Icon } from 'leaflet';
+import MarkerImage from "../assets/location-icon.svg";
 
-export default new L.Icon({
-  iconUrl: require('../assets/location-icon.svg'),
-  iconRetinaUrl: require('../assets/location-icon.svg'),
+const HouseIcon = new Icon({
+  iconUrl: MarkerImage,
+  iconRetinaUrl: MarkerImage,
+  iconSize: [45, 50],
   iconAnchor: null,
   popupAnchor: null,
   shadowUrl: null,
   shadowSize: null,
   shadowAnchor: null,
-  iconSize: new L.Point(45, 50),
-  className: 'leaflet-div-icon',
 });
+
+export default HouseIcon;
