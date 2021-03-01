@@ -1,104 +1,71 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
-  MapContainer,
-  TileLayer,
-  LayersControl,
-  Pane,
-  GeoJSON,
-  ZoomControl,
-} from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
-import { useTranslation } from 'react-i18next';
+	MapContainer,
+	TileLayer,
+	LayersControl,
+	Pane,
+	GeoJSON,
+	ZoomControl,
+	Marker,
+	Popup,
+} from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-markercluster";
+import { useTranslation } from "react-i18next";
+import HouseIcon from "../components/HouseIcon"
+import getMapConfig from "../config/map-config";
+import { fetchAirtableData } from "../reducers/data";
 
-import getMapConfig from '../config/map-config';
 
 function LeafletMap({ mapConfig }) {
-  // const layers = useSelector(state => state.data.layers);
-  const layers = []
-  const dispatch = useDispatch();
-  const { t } = useTranslation();
+	const dispatch = useDispatch();
+	const { t } = useTranslation();
+	const interviews = useSelector(state => state.data.interviews)
 
-  if (!layers || !layers.length) return <></>;
+	useEffect(() => {
+		dispatch(fetchAirtableData);
+	}, []);
 
-  return (
-    <>
-      <LayersControl collapsed={false} position="topright">
-        {layers.map(layer => {
-          return (
-            <LayersControl.Overlay
-              key={layer.key}
-              name={t(layer.layerConfig.nameI18n)}
-              checked={mapConfig[layer.key] === true}
-            >
-              {layer.layerConfig.name === 'Housing Justice Actions' ? (
-                <Pane
-                  name={layer.key}
-                  style={{ zIndex: 500 + layer.layerConfig.zIndex }}
-                >
-                  <MarkerClusterGroup>
-                    <GeoJSON
-                      data={layer.data}
-                      style={layer.layerConfig.style}
-                      pointToLayer={layer.layerConfig.pointToLayer}
-                      onEachFeature={(feature, mapLayer) => {
-                        mapLayer.on('click', () => {
-                          dispatch({
-                            type: 'ui:info-window:show',
-                            payload: layer.layerConfig.props(mapLayer.feature),
-                          });
-                        });
-                      }}
-                    ></GeoJSON>
-                  </MarkerClusterGroup>
-                </Pane>
-              ) : (
-                <Pane
-                  name={layer.key}
-                  style={{ zIndex: 500 + layer.layerConfig.zIndex }}
-                >
-                  <GeoJSON
-                    data={layer.data}
-                    style={layer.layerConfig.style}
-                    onEachFeature={(feature, mapLayer) => {
-                      mapLayer.on('click', () => {
-                        dispatch({
-                          type: 'ui:info-window:show',
-                          payload: layer.layerConfig.props(mapLayer.feature),
-                        });
-                      });
-                      layer.layerConfig.onEachFeature(feature, mapLayer);
-                    }}
-                    pointToLayer={layer.layerConfig.pointToLayer}
-                  ></GeoJSON>
-                </Pane>
-              )}
-            </LayersControl.Overlay>
-          );
-        })}
-      </LayersControl>
-      <ZoomControl position="bottomright" />
-    </>
-  );
+	return (
+		<>
+			{interviews.filter(i => i.fields["Geo-Location for map latlong"]).map((interview) => {
+				return (
+					<Marker
+						key={interview.id}
+						position={interview.fields["Geo-Location for map latlong"]}
+						icon={HouseIcon}
+						eventHandlers={{
+							click: e => {
+								dispatch({ type: 'ui:interview:selected', payload: interview })
+							}
+						}}
+					>
+					</Marker>
+				);
+			})}
+			<LayersControl collapsed={false} position="topright"></LayersControl>
+			<ZoomControl position="bottomright" />
+		</>
+	);
 }
 
-export default props => {
-  const mapConfig = getMapConfig();
+export default (props) => {
+	const mapConfig = getMapConfig();
 
-  // Map component id prop may be an anti-pattern
-  return (
-    <MapContainer
-      zoomControl={false}
-      center={[mapConfig.lat, mapConfig.lng]}
-      minZoom={3}
-      zoom={mapConfig.z}
-      id="map"
-    >
-      <TileLayer
-        attribution="<a href='https://www.antievictionmap.com/' target='_blank'>Anti-Eviction Mapping Project</a>"
-        url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
-      />
-      <LeafletMap mapConfig={mapConfig} />
-    </MapContainer>
-  );
+	// Map component id prop may be an anti-pattern
+	return (
+		<MapContainer
+			zoomControl={false}
+			center={[mapConfig.lat, mapConfig.lng]}
+			minZoom={3}
+			zoom={mapConfig.z}
+			id="map"
+		>
+			<TileLayer
+				attribution="<a href='https://www.antievictionmap.com/' target='_blank'>Anti-Eviction Mapping Project</a>"
+				url="https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+			/>
+			<LeafletMap mapConfig={mapConfig} />
+		</MapContainer>
+	);
 };
