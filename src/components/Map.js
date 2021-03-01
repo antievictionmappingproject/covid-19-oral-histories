@@ -34,8 +34,12 @@ function LeafletMap({ mapConfig }) {
 						key={interview.id}
 						position={interview.fields["Geo-Location for map latlong"]}
 						icon={HouseIcon}
+						eventHandlers={{
+							click: e => {
+								dispatch({ type: 'ui:interview:selected', payload: interview })
+							}
+						}}
 					>
-						<Popup>hello</Popup>
 					</Marker>
 				);
 			})}

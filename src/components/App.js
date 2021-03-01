@@ -13,6 +13,7 @@ import { getAllCartoLayers } from "../carto/api";
 export default () => {
 	const i18nLoaded = useSelector((state) => state.content.i18n);
 	const dispatch = useDispatch();
+	const interviewSelected = useSelector(state => state.ui.interviewSelected);
 
 	useEffect(() => {
 		(async () => {
@@ -47,7 +48,7 @@ export default () => {
 			</Translation>
 			<LeafletMap />
 			<LoadingIndicator />
-			<InfoWindow />
+			{ interviewSelected && <InfoWindow /> }
 		</>
 	);
 };
