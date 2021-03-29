@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ReactMarkdown from "react-markdown";
+import AudioPlayer from "../components/AudioPlayer";
 
 const BlogImage = (props) => {
 	return <img {...props} style={{ maxWidth: "100%" }} />;
@@ -9,7 +10,7 @@ const BlogVideo = (props) => {
 	return <video {...props} style={{ maxWidth: "100%" }} />;
 };
 const BlogAudio = (props) => {
-	return <audio {...props} style={{ maxWidth: "100%" }} />;
+	return <AudioPlayer {...props} style={{ maxWidth: "100%" }} />;
 };
 
 function parseNodeFromHTML(htmlString) {

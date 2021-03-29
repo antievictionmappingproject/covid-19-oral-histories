@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
+import Scratch from './components/Scratch';
 import { Provider } from 'react-redux';
 import store from './reducers';
 import './styles/index.scss';
 import 'leaflet/dist/leaflet.css'; //regular leaflet
 import reportWebVitals from './reportWebVitals';
 
+const useScratch = false;
+
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    { useScratch ? <Scratch /> : <App /> }
   </Provider>,
   document.getElementById('root')
 );
