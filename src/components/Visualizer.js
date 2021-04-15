@@ -125,7 +125,7 @@ export default (props) => {
 				id="volume"
 				min="0"
 				max="2"
-				value="1"
+				defaultValue="1"
 				step="0.01"
 			></input>
 		</>
