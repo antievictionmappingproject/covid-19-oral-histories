@@ -56,10 +56,6 @@ export default (props) => {
 				<ReactMarkdown
 					escapeHtml={false}
 					renderers={{ html: Embed }}
-					allowNode={(node, index, parent) => {
-						console.log(node, index, parent);
-						return true;
-					}}
 				>
 					{interviewSelected.fields.DEV_content}
 				</ReactMarkdown>
