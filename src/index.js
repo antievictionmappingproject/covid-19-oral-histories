@@ -1,20 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './components/App';
-import Scratch from './components/Scratch';
-import { Provider } from 'react-redux';
-import store from './reducers';
-import './styles/index.scss';
-import 'leaflet/dist/leaflet.css'; //regular leaflet
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./components/App";
+import Scratch from "./components/Scratch";
+import { Provider } from "react-redux";
+import store from "./reducers";
+import "./styles/index.scss";
+import "leaflet/dist/leaflet.css"; //regular leaflet
+import reportWebVitals from "./reportWebVitals";
 
-const useScratch = false;
+const useScratch = true;
 
 ReactDOM.render(
-  <Provider store={store}>
-    { useScratch ? <Scratch /> : <App /> }
-  </Provider>,
-  document.getElementById('root')
+	<Provider store={store}>{useScratch ? <Scratch /> : <App />}</Provider>,
+	document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

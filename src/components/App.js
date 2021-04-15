@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 // import Modal from "./Modal";
@@ -13,7 +14,7 @@ import { getAllCartoLayers } from "../carto/api";
 export default () => {
 	const i18nLoaded = useSelector((state) => state.content.i18n);
 	const dispatch = useDispatch();
-	const interviewSelected = useSelector(state => state.ui.interviewSelected);
+	const interviewSelected = useSelector((state) => state.ui.interviewSelected);
 
 	useEffect(() => {
 		(async () => {
@@ -48,7 +49,7 @@ export default () => {
 			</Translation>
 			<LeafletMap />
 			<LoadingIndicator />
-			{ interviewSelected && <InfoWindow /> }
+			{interviewSelected && <InfoWindow />}
 		</>
 	);
 };

@@ -1,3 +1,5 @@
+/* eslint-disable import/no-anonymous-default-export */
+/* eslint-disable jsx-a11y/alt-text */
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import ReactMarkdown from "react-markdown";
@@ -53,10 +55,7 @@ export default (props) => {
 				×
 			</span>
 			<div>
-				<ReactMarkdown
-					escapeHtml={false}
-					renderers={{ html: Embed }}
-				>
+				<ReactMarkdown escapeHtml={false} renderers={{ html: Embed }}>
 					{interviewSelected.fields.DEV_content}
 				</ReactMarkdown>
 			</div>
