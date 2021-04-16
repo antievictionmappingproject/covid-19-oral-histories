@@ -32,6 +32,8 @@ class Radial {
 	}
 }
 
+const average = (arr) => arr.reduce((p, c) => p + c, 0) / arr.length;
+
 export default (props) => {
 	const cnrRef = useRef();
 	const p5Ref = useRef();
@@ -41,6 +43,9 @@ export default (props) => {
 	const objects = useRef({});
 	const audioRef = useRef();
 	const volRef = useRef();
+	const analyserRef = useRef();
+	var dataArray;
+	var freq_max = 255;
 
 	useEffect(() => {
 		p5Ref.current = new p5(initter, cnrRef.current);
@@ -65,9 +70,29 @@ export default (props) => {
 			for (let i = 0; i < obIds.length; i++) {
 				objects.current[obIds[i]].display();
 			}
+
+			analyserRef.current.getByteFrequencyData(dataArray);
+			freq_max -= 3;
+			console.log("freq_max=", freq_max);
+			if ((dataArray[5] > 1.1 * freq_max) & !audioRef.current.paused) {
+				const dims = getSize();
+				spawnRadial(dims.width / 2, dims.height / 2, 400, 1000);
+			}
+			freq_max = Math.max(freq_max, dataArray[5]);
 		};
 		s.mouseClicked = () => {
-			spawnRadial(s.mouseX, s.mouseY, Math.random() * 300, 500);
+			const dims = getSize();
+			if (
+				s.mouseX > 0 &&
+				s.mouseX < dims.width &&
+				s.mouseY > 0 &&
+				s.mouseY < dims.height
+			) {
+				audioRef.current.paused
+					? audioRef.current.play()
+					: audioRef.current.pause();
+				spawnRadial(s.mouseX, s.mouseY, Math.random() * 300, 500);
+			}
 		};
 		sketchRef.current = s;
 	}
@@ -98,18 +123,25 @@ export default (props) => {
 	}
 
 	function plugAudio() {
-		console.log(audioRef);
 		const AudioContext = window.AudioContext || window.webkitAudioContext;
 		const audioContext = new AudioContext();
+
+		analyserRef.current = audioContext.createAnalyser();
+		analyserRef.current.fftSize = 32;
+		var bufferLength = analyserRef.current.frequencyBinCount;
+		dataArray = new Uint8Array(bufferLength);
+
 		const track = audioContext.createMediaElementSource(audioRef.current);
 		const gainNode = audioContext.createGain();
-		track.connect(gainNode).connect(audioContext.destination);
+		track
+			.connect(gainNode)
+			.connect(analyserRef.current)
+			.connect(audioContext.destination);
 
 		volRef.current.addEventListener(
 			"input",
 			function () {
 				gainNode.gain.value = this.value;
-				console.log(this.value);
 			},
 			false
 		);
@@ -118,13 +150,18 @@ export default (props) => {
 	return (
 		<>
 			<div ref={cnrRef} className="visualizer"></div>
-			<audio ref={audioRef} {...props} onLoadedData={plugAudio}></audio>
+			<audio
+				ref={audioRef}
+				{...props}
+				controls={false}
+				onLoadedData={plugAudio}
+			></audio>
 			<input
 				ref={volRef}
 				type="range"
 				id="volume"
 				min="0"
-				max="2"
+				max="5"
 				defaultValue="1"
 				step="0.01"
 			></input>
