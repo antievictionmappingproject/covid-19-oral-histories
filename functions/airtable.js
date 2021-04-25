@@ -15,7 +15,7 @@ exports.handler = function (event, context, callback) {
 	base("Content Creation")
 		.select({
 			// Selecting the first 3 records in Interview Tracking:
-			view: "Brett's View - Call to Action Button",
+			view: "Developer View",
 		})
 		.eachPage(
 			function page(records, fetchNextPage) {

@@ -8,7 +8,7 @@ import "./styles/index.scss";
 import "leaflet/dist/leaflet.css"; //regular leaflet
 import reportWebVitals from "./reportWebVitals";
 
-const useScratch = true;
+const useScratch = false;
 
 ReactDOM.render(
 	<Provider store={store}>{useScratch ? <Scratch /> : <App />}</Provider>,

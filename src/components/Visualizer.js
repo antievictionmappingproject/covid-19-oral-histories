@@ -65,7 +65,7 @@ export default (props) => {
 			spawnRadial(dims.width / 2, dims.height / 2, 100);
 		};
 		s.draw = () => {
-			s.background(0);
+			s.background(255);
 			const obIds = Object.keys(objects.current);
 			for (let i = 0; i < obIds.length; i++) {
 				objects.current[obIds[i]].display();
@@ -73,10 +73,9 @@ export default (props) => {
 
 			analyserRef.current.getByteFrequencyData(dataArray);
 			freq_max -= 3;
-			console.log("freq_max=", freq_max);
 			if ((dataArray[5] > 1.1 * freq_max) & !audioRef.current.paused) {
 				const dims = getSize();
-				spawnRadial(dims.width / 2, dims.height / 2, 400, 1000);
+				spawnRadial(dims.width / 2, dims.height / 2, 100, 1000);
 			}
 			freq_max = Math.max(freq_max, dataArray[5]);
 		};
