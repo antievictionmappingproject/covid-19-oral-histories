@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import LoadingIndicator from "./LoadingIndicator";
 import InfoWindow from "./InfoWindow";
 import LeafletMap from "./Map";
+import Navigation from "./Navigation";
 // import Titlebox from "./Titlebox";
 // import SearchBar from "./SearchBar";
 import { i18nInit } from "../utils/i18n";
@@ -50,6 +51,7 @@ export default () => {
 			<LeafletMap />
 			<LoadingIndicator />
 			{interviewSelected && <InfoWindow />}
+			<Navigation />
 		</>
 	);
 };
