@@ -71,16 +71,18 @@ export default (props) => {
 				objects.current[obIds[i]].display();
 			}
 
-			analyserRef.current.getByteFrequencyData(dataArray);
-			freq_max -= 3;
-			if ((dataArray[5] > 1.1 * freq_max) & !audioRef.current.paused) {
-				const dims = getSize();
-				spawnRadial(dims.width / 2, dims.height / 2, 100, 1000);
+			if (analyserRef.current & audioRef.current) {
+				analyserRef.current.getByteFrequencyData(dataArray);
+				freq_max -= 3;
+				if ((dataArray[5] > 1.1 * freq_max) & !audioRef.current.paused) {
+					const dims = getSize();
+					spawnRadial(dims.width / 2, dims.height / 2, 100, 1000);
+				}
+				freq_max = Math.max(freq_max, dataArray[5]);
 			}
-			freq_max = Math.max(freq_max, dataArray[5]);
 		};
 		s.mouseClicked = () => {
-			const dims = getSize();
+			const dims = cnrRef.current ? getSize() : { width: 0, height: 0 };
 			if (
 				s.mouseX > 0 &&
 				s.mouseX < dims.width &&
@@ -90,6 +92,7 @@ export default (props) => {
 				audioRef.current.paused
 					? audioRef.current.play()
 					: audioRef.current.pause();
+				console.log(audioRef.current);
 				spawnRadial(s.mouseX, s.mouseY, Math.random() * 300, 500);
 			}
 		};
@@ -154,6 +157,7 @@ export default (props) => {
 				{...props}
 				controls={false}
 				onLoadedData={plugAudio}
+				crossOrigin
 			></audio>
 			<input
 				ref={volRef}

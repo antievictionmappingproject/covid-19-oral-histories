@@ -15,6 +15,11 @@ const BlogAudio = (props) => {
 	return <AudioPlayer {...props} style={{ maxWidth: "100%" }} />;
 };
 
+const DefaultContent = (props) => {
+	console.log(props);
+	return <div>Default Content</div>;
+};
+
 function parseNodeFromHTML(htmlString) {
 	var div = document.createElement("div");
 	div.innerHTML = htmlString.trim();
@@ -43,7 +48,6 @@ const Embed = (props) => {
 export default (props) => {
 	const interviewSelected = useSelector((state) => state.ui.interviewSelected);
 	const dispatch = useDispatch();
-
 	return (
 		<div className="aemp-infowindow">
 			<span
@@ -55,9 +59,13 @@ export default (props) => {
 				×
 			</span>
 			<div>
-				<ReactMarkdown escapeHtml={false} renderers={{ html: Embed }}>
-					{interviewSelected.fields.DEV_content}
-				</ReactMarkdown>
+				{interviewSelected.fields.DEV_content == null ? (
+					<DefaultContent interview={interviewSelected} />
+				) : (
+					<ReactMarkdown escapeHtml={false} renderers={{ html: Embed }}>
+						{interviewSelected.fields.DEV_content}
+					</ReactMarkdown>
+				)}
 			</div>
 		</div>
 	);
