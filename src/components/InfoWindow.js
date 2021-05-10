@@ -54,6 +54,7 @@ export default (props) => {
 				×
 			</span>
 			<div>
+				<BlogAudio src="https://aemp-covid-oral-map.s3.amazonaws.com/006_SF_MV_Clip.mp3" />
 				<ReactMarkdown escapeHtml={false} renderers={{ html: Embed }}>
 					{interviewSelected.fields.DEV_content}
 				</ReactMarkdown>
