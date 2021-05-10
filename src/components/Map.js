@@ -28,12 +28,19 @@ function LeafletMap({ mapConfig }) {
 	return (
 		<>
 			{interviews
-				.filter((i) => i.fields["Geo-Location for map latlong"])
+				.filter((i) => i.fields["Latitude"])
 				.map((interview) => {
+					console.log(
+						interview.fields["Latitude"],
+						interview.fields["Longitude"]
+					);
 					return (
 						<Marker
 							key={interview.id}
-							position={interview.fields["Geo-Location for map latlong"]}
+							position={[
+								interview.fields["Latitude"],
+								interview.fields["Longitude"],
+							]}
 							icon={HouseIcon}
 							eventHandlers={{
 								click: (e) => {
