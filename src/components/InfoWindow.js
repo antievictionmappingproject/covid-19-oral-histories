@@ -15,11 +15,6 @@ const BlogAudio = (props) => {
 	return <AudioPlayer {...props} style={{ maxWidth: "100%" }} />;
 };
 
-const DefaultContent = (props) => {
-	console.log(props);
-	return <div>Default Content</div>;
-};
-
 function parseNodeFromHTML(htmlString) {
 	var div = document.createElement("div");
 	div.innerHTML = htmlString.trim();
@@ -59,13 +54,9 @@ export default (props) => {
 				×
 			</span>
 			<div>
-				{interviewSelected.fields.DEV_content == null ? (
-					<DefaultContent interview={interviewSelected} />
-				) : (
-					<ReactMarkdown escapeHtml={false} renderers={{ html: Embed }}>
-						{interviewSelected.fields.DEV_content}
-					</ReactMarkdown>
-				)}
+				<ReactMarkdown escapeHtml={false} renderers={{ html: Embed }}>
+					{interviewSelected.fields.DEV_content}
+				</ReactMarkdown>
 			</div>
 		</div>
 	);
