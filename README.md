@@ -2,9 +2,7 @@
 
 ## To run app, run this command
 
-- netlify dev
-
-There is likely a better way to have access to these in process.env in the local dev, but a few things I tried didn't work -Bora
+netlify dev
 
 # To do
 
