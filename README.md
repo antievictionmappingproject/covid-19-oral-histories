@@ -1,10 +1,6 @@
 # Running the repo
 
-## To run app, run these commands
-
-- export AIRTABLE_API_KEY=[you airtable api key here]
-- export AIRTABLE_BASE_ID=[your base id here]
-- export MAPQUEST_BASE_ID=[your mapquest api here]
+## To run app, run this command
 
 - netlify dev
 
