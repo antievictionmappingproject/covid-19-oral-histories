@@ -28,12 +28,13 @@ function LeafletMap({ mapConfig }) {
 	return (
 		<>
 			{interviews
-				.filter((i) => i.fields["Latitude"])
+				.filter(
+					(i) =>
+						i.fields["Latitude"] &&
+						i.fields["Longitude"] &&
+						i.fields["ENTRY COMPLETED"]
+				)
 				.map((interview) => {
-					console.log(
-						interview.fields["Latitude"],
-						interview.fields["Longitude"]
-					);
 					return (
 						<Marker
 							key={interview.id}
@@ -59,7 +60,7 @@ function LeafletMap({ mapConfig }) {
 	);
 }
 
-export default (props) => {
+const Map = (props) => {
 	const mapConfig = getMapConfig();
 
 	// Map component id prop may be an anti-pattern
@@ -79,3 +80,5 @@ export default (props) => {
 		</MapContainer>
 	);
 };
+
+export default Map;

@@ -31,8 +31,6 @@ const Embed = (props) => {
 				return <BlogImage src={node.src} />;
 			case "VIDEO":
 				return <BlogVideo controls src={node.src} />;
-			case "AUDIO":
-				return <BlogAudio controls src={node.src} />;
 			default:
 				return null;
 		}
@@ -54,7 +52,9 @@ export default (props) => {
 				×
 			</span>
 			<div>
-				<BlogAudio src="https://aemp-covid-oral-map.s3.amazonaws.com/006_SF_MV_Clip.mp3" />
+				{interviewSelected.fields["Audio file"] && (
+					<BlogAudio src={interviewSelected.fields["Audio file"][0].url} />
+				)}
 				<ReactMarkdown escapeHtml={false} renderers={{ html: Embed }}>
 					{interviewSelected.fields.DEV_content}
 				</ReactMarkdown>
