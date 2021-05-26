@@ -52,9 +52,33 @@ export default (props) => {
 				×
 			</span>
 			<div>
+				{interviewSelected.fields["Name of Final Media Output File"] && (
+					<div>
+						<h1>Title:</h1>
+						<h2>
+							{interviewSelected.fields["Name of Final Media Output File"]}
+						</h2>
+					</div>
+				)}
 				{interviewSelected.fields["Audio file"] && (
 					<BlogAudio src={interviewSelected.fields["Audio file"][0].url} />
 				)}
+				{interviewSelected.fields["Name of Interviewee or Anonymous"] && (
+					<div>
+						<h1>Name:</h1>
+						<h2>
+							{interviewSelected.fields["Name of Interviewee or Anonymous"]}
+						</h2>
+					</div>
+				)}
+
+				{interviewSelected.fields["Clip Summary"] && (
+					<div>
+						<h1>Summary:</h1>
+						<p>{interviewSelected.fields["Clip Summary"]}</p>
+					</div>
+				)}
+
 				<ReactMarkdown escapeHtml={false} renderers={{ html: Embed }}>
 					{interviewSelected.fields.DEV_content}
 				</ReactMarkdown>

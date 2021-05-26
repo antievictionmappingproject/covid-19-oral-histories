@@ -10,7 +10,6 @@ import {
 	Marker,
 	Popup,
 } from "react-leaflet";
-import MarkerClusterGroup from "react-leaflet-markercluster";
 import { useTranslation } from "react-i18next";
 import HouseIcon from "../components/HouseIcon";
 import getMapConfig from "../config/map-config";
@@ -27,33 +26,26 @@ function LeafletMap({ mapConfig }) {
 
 	return (
 		<>
-			{interviews
-				.filter(
-					(i) =>
-						i.fields["Latitude"] &&
-						i.fields["Longitude"] &&
-						i.fields["ENTRY COMPLETED"]
-				)
-				.map((interview) => {
-					return (
-						<Marker
-							key={interview.id}
-							position={[
-								interview.fields["Latitude"],
-								interview.fields["Longitude"],
-							]}
-							icon={HouseIcon}
-							eventHandlers={{
-								click: (e) => {
-									dispatch({
-										type: "ui:interview:selected",
-										payload: interview,
-									});
-								},
-							}}
-						></Marker>
-					);
-				})}
+			{interviews.map((interview) => {
+				return (
+					<Marker
+						key={interview.id}
+						position={[
+							interview.fields["Latitude"],
+							interview.fields["Longitude"],
+						]}
+						icon={HouseIcon}
+						eventHandlers={{
+							click: (e) => {
+								dispatch({
+									type: "ui:interview:selected",
+									payload: interview,
+								});
+							},
+						}}
+					></Marker>
+				);
+			})}
 			<LayersControl collapsed={false} position="topright"></LayersControl>
 			<ZoomControl position="bottomright" />
 		</>

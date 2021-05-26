@@ -21,9 +21,21 @@ exports.handler = function (event, context, callback) {
 			function page(records, fetchNextPage) {
 				// This function (`page`) will get called for each page of records.
 
-				records.forEach(function (record) {
-					allRecords.push(record);
-				});
+				records
+					.filter(
+						(i) =>
+							i.fields["Latitude"] &&
+							i.fields["Longitude"] &&
+							i.fields["ENTRY COMPLETED"]
+					)
+					.forEach(function (record) {
+						if (
+							record.fields["Level of Anonymity Requested"] ===
+							"Complete Anonymity"
+						)
+							delete record.fields["Name of Interviewee or Anonymous"];
+						allRecords.push(record);
+					});
 
 				// To fetch the next page of records, call `fetchNextPage`.
 				// If there are more records, `page` will get called again.
@@ -34,7 +46,6 @@ exports.handler = function (event, context, callback) {
 				if (err) {
 					callback(err);
 				} else {
-					console.log(allRecords.length);
 					const response = {
 						statusCode: 200,
 						body: JSON.stringify({ records: allRecords }),
